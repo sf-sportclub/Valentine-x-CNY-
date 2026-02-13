@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Valentine's Message | SF Employees</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&family=Montserrat:wght@400;700;900&display=swap');
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 50%, #ffafbd 100%);
+            --envelope-red: #f25c54;
+            --envelope-dark: #d64541;
+            --gold-accent: #ffd700;
+            --gold-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --card-white: rgba(255, 255, 255, 0.95);
+            --text-main: #4a1e36;
+            --header-dark: #880d1e;
+            --cny-gold: #ce9d2e;
+            --shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-gradient);
+            background-size: 200% 200%;
+            animation: gradientBG 10s ease infinite;
+            font-family: 'Kanit', sans-serif;
+            overflow: hidden;
+            perspective: 1500px;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Background Decorations --- */
+        .bokeh-wrap {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .bokeh {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.4;
+            background: white;
+            animation: moveBokeh 15s infinite alternate ease-in-out;
+        }
+
+        @keyframes moveBokeh {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(100px, 50px) scale(1.5); }
+        }
+
+        /* Falling Elements (Sakura, Lanterns) */
+        #falling-elements {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .falling-item {
+            position: absolute;
+            top: -50px;
+            animation: fall linear forwards;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg) scale(1); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(0.8); opacity: 0; }
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            z-index: 40;
+        }
+
+        body.is-open .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- Headers --- */
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            z-index: 5;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+        }
+
+        body.is-open header {
+            opacity: 0;
+            transform: translateY(-80px) scale(0.9);
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Montserrat', 'Kanit', sans-serif;
+            font-size: 1.8rem;
+            color: var(--header-dark);
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+            font-weight: 900;
+            line-height: 1.4;
+            background: linear-gradient(45deg, #880d1e, #d62828);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        /* --- Input Section --- */
+        .input-box {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(242, 92, 84, 0.15);
+            margin-bottom: 30px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 2px solid rgba(255, 175, 189, 0.5);
+            transition: all 0.5s ease;
+            width: 100%;
+            max-width: 320px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transform: skewX(-20deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        body.is-open .input-box {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(30px) scale(0.9);
+        }
+
+        .input-box input {
+            padding: 14px;
+            border-radius: 12px;
+            border: 2px solid #ffafbd;
+            text-align: center;
+            font-size: 1.2rem;
+            font-family: 'Montserrat', 'Kanit', sans-serif;
+            outline: none;
+            color: var(--header-dark);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .input-box input:focus {
+            border-color: var(--envelope-red);
+            box-shadow: 0 0 10px rgba(242, 92, 84, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .input-box button {
+            background: linear-gradient(45deg, #f25c54, #d64541, #f25c54);
+            background-size: 200% auto;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(242, 92, 84, 0.4);
+            transition: all 0.3s ease;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .input-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(242, 92, 84, 0.6);
+        }
+        
+        .input-box button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .input-box button:active {
+            transform: translateY(1px);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .error-msg {
+            color: #d62828;
+            font-size: 0.85rem;
+            height: 1.2rem;
+            text-align: center;
+            font-weight: 600;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+
+        /* --- Envelope --- */
+        .stage {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            z-index: 10;
+            animation: floating 4s infinite ease-in-out;
+            transition: all 0.5s ease;
+        }
+
+        body.is-open .stage {
+            opacity: 0;
+            transform: translateY(100px) scale(0.5);
+            pointer-events: none;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: var(--envelope-dark);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border-radius: 8px;
+        }
+
+        .envelope-wrapper::before {
+            content: '';
+            position: absolute;
+            z-index: 4;
+            inset: 0;
+            border-top: 90px solid transparent;
+            border-right: 140px solid var(--envelope-red);
+            border-bottom: 90px solid var(--envelope-red);
+            border-left: 140px solid var(--envelope-red);
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 95px solid #bd2d28;
+            transform-origin: top;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 5;
+        }
+
+        .envelope-wrapper.is-flap-open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .seal {
+            position: absolute;
+            top: 65px;
+            left: 115px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff4d6d, #c9184a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 6;
+            color: white;
+            font-size: 22px;
+            border: 2px solid var(--gold-accent);
+            box-shadow: 0 0 15px rgba(255, 77, 109, 0.6), inset 0 0 10px rgba(0,0,0,0.2);
+            animation: pulseSeal 2s infinite;
+        }
+
+        @keyframes pulseSeal {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(255, 77, 109, 0.9); }
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
+        }
+
+        /* --- Message Card --- */
+        .card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 360px;
+            max-width: 95vw;
+            height: 660px;
+            max-height: 90vh;
+            background: var(--card-white);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 30px 24px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4), inset 0 0 0 4px #fff0f3, inset 0 0 0 8px #ffafbd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transform: translate(-50%, 0) scale(0.2) rotate(-10deg);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 100;
+            transition: all 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow-y: auto;
+        }
+
+        .card::-webkit-scrollbar { width: 6px; }
+        .card::-webkit-scrollbar-thumb { background: #ffafbd; border-radius: 10px; }
+
+        body.is-open .card {
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .card-header-badge {
+            background: var(--gold-gradient);
+            color: #5e0b15;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(253, 160, 133, 0.4);
+            text-transform: uppercase;
+        }
+
+        .emp-name {
+            font-size: 1.6rem;
+            color: var(--header-dark);
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .emp-zodiac {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #880d1e;
+            align-self: flex-start;
+            margin-bottom: 6px;
+            margin-left: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .power-box {
+            background: linear-gradient(135deg, #fff8f9, #fff0f3);
+            padding: 14px 18px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-main);
+            margin-bottom: 18px;
+            border-left: 5px solid var(--envelope-red);
+            text-align: left;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            position: relative;
+        }
+
+        .personal-msg-box {
+            background: linear-gradient(135deg, #fdf0d5, #fcf4e3);
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #5e0b15;
+            margin-bottom: 18px;
+            width: 100%;
+            text-align: left;
+            position: relative;
+            border: 1.5px dashed var(--cny-gold);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .personal-msg-box::before {
+            content: '🧧';
+            position: absolute;
+            top: -12px;
+            right: -5px;
+            font-size: 1.4rem;
+            transform: rotate(15deg);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            animation: floating 3s infinite ease-in-out;
+        }
+
+        .blessing-text {
+            font-style: italic;
+            color: #d62828;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            padding: 0 10px;
+            position: relative;
+        }
+        
+        .blessing-text::before, .blessing-text::after {
+            content: '✨';
+            position: absolute;
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+        .blessing-text::before { left: -5px; top: 0; }
+        .blessing-text::after { right: -5px; bottom: 0; }
+
+        .lucky-numbers {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .lucky-numbers span {
+            background: var(--gold-gradient);
+            color: #5e0b15;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(253, 160, 133, 0.4), inset 0 -2px 5px rgba(0,0,0,0.1);
+            border: 2px solid white;
+        }
+        
+        .btn-photo {
+            width: 100%;
+            background: linear-gradient(45deg, #ffd700, #ffb347);
+            color: #5e0b15;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 179, 71, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-photo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 179, 71, 0.6);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .btn-card {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .btn-card:active { transform: scale(0.95); }
+
+        .btn-copy { 
+            background: #f1f3f5; 
+            color: #495057; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .btn-copy:hover { background: #e9ecef; }
+
+        .btn-close { 
+            background: var(--envelope-red); 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(242, 92, 84, 0.3);
+        }
+        .btn-close:hover { background: #d64541; }
+        
+        /* --- Photo Popup Modal --- */
+        .photo-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            padding: 20px;
+        }
+        
+        .photo-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .photo-content {
+            position: relative;
+            transform: scale(0.8);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        
+        .photo-modal.show .photo-content {
+            transform: scale(1);
+        }
+        
+        .photo-frame {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            /* Luxurious Frame Style */
+            border: 4px solid #ce9d2e; /* Gold border */
+            outline: 2px solid #880d1e; /* Red outline */
+            outline-offset: 4px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 20px 50px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .photo-frame::before {
+            content: '📸 ความทรงจำของเรา';
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1rem;
+            white-space: nowrap;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .photo-frame img {
+            display: block;
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .close-photo {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            background: white;
+            color: #d62828;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 2px solid #d62828;
+            z-index: 10;
+        }
+
+        /* --- Animations --- */
+        .heart-burst {
+            position: fixed;
+            pointer-events: none;
+            z-index: 110;
+            animation: burst 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+
+        @keyframes burst {
+            0% { transform: scale(0) translate(0,0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1.5) translate(var(--x), var(--y)) rotate(var(--rot)); opacity: 0; }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            background: rgba(43, 45, 66, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 200;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="bokeh-wrap" id="bokeh-container"></div>
+    <div id="falling-elements"></div>
+    <div class="overlay" id="overlay" onclick="closeCard()"></div>
+
+    <header id="main-header">
+        <h1>🧧 การ์ดพลังมงคล<br>Valentine × ตรุษจีน 💌</h1>
+        <p style="color: #a4161a; font-size: 0.9rem; margin-top: 8px; font-weight: 600;">A Special Warm Message for SF Family</p>
+    </header>
+
+    <div class="input-box" id="id-input-section">
+        <p style="font-size: 0.95rem; font-weight: 700; color: #880d1e; text-align: center;">ใส่รหัสพนักงานเพื่อเปิดซองมงคล 🗝️</p>
+        <input type="tel" id="emp-id-input" placeholder="รหัสพนักงาน" maxlength="10">
+        <p class="error-msg" id="error-msg"></p>
+        <button id="verify-btn" onclick="handleVerify()">✨ เปิดซองความสุข ✨</button>
+    </div>
+
+    <div class="stage" id="stage">
+        <div class="envelope-wrapper" id="envelope">
+            <div class="flap"></div>
+            <div class="seal">❤️</div>
+        </div>
+    </div>
+
+    <!-- The Result Card -->
+    <div class="card" id="message-card">
+        <div class="card-header-badge">Valentine x CNY Special 2025</div>
+        
+        <div class="emp-name" id="display-name">คุณ...</div>
+        <div class="emp-zodiac" id="display-zodiac">ราศี...</div>
+        
+        <div class="section-title">🔮 พลังมงคลปีนี้:</div>
+        <div class="power-box" id="display-power">พลังเด่นคือความสดใส...</div>
+        
+        <div class="section-title">💌 ความในใจพิเศษ:</div>
+        <div class="personal-msg-box" id="display-personal">
+            ขอให้เป็นปีที่ดี...
+        </div>
+
+        <div class="section-title">🌟 คำอวยพรส่งท้าย:</div>
+        <div class="blessing-text" id="display-blessing">
+            "ขอให้ทุกวันเต็มไปด้วยพลังใจดี ๆ"
+        </div>
+        
+        <div style="font-size: 0.8rem; color: #ce9d2e; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;">
+            🎲 เลขมงคลนำโชค:
+        </div>
+        <div class="lucky-numbers" id="display-numbers">
+            <!-- Numbers will be injected here as spans -->
+        </div>
+        
+        <!-- Group Photo Button -->
+        <button class="btn-photo" onclick="openPhoto()">
+            📸 ดูรูปภาพรวมความทรงจำ
+        </button>
+        
+        <div class="btn-group">
+            <button class="btn-card btn-copy" onclick="copyBlessing()">📋 คัดลอกข้อความ</button>
+            <button class="btn-card btn-close" onclick="closeCard()">ปิดการ์ด ❌</button>
+        </div>
+    </div>
+
+    <!-- Photo Modal Popup -->
+    <div id="photo-modal" class="photo-modal" onclick="closePhoto()">
+        <div class="photo-content" onclick="event.stopPropagation()">
+            <div class="close-photo" onclick="closePhoto()">✕</div>
+            <div class="photo-frame">
+                <img src="https://firebasestorage.googleapis.com/v0/b/pichayut-40dd2.firebasestorage.app/o/LINE_ALBUM_24122025_260210_1.jpg?alt=media&token=2f1e328e-a518-4364-bf95-545326a943a0" alt="Group Memory">
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">💖 คัดลอกข้อความส่งความสุขแล้ว! ✨</div>
+
+    <script>
+        // -------------------------------------------------------------
+        // 🛠️ ส่วนตั้งค่าสำหรับเชื่อมต่อ Google Apps Script
+        // -------------------------------------------------------------
+        // นำ Web App URL ที่ได้จาก Google Apps Script มาวางในเครื่องหมายคำพูดด้านล่าง
+        const API_URL = ""; 
+        // -------------------------------------------------------------
+
+        let isCardOpen = false;
+
+        // Create Bokeh Background
+        const bokehContainer = document.getElementById('bokeh-container');
+        for (let i = 0; i < 10; i++) {
+            const b = document.createElement('div');
+            b.classList.add('bokeh');
+            b.style.width = Math.random() * 150 + 100 + 'px';
+            b.style.height = b.style.width;
+            b.style.top = Math.random() * 100 + '%';
+            b.style.left = Math.random() * 100 + '%';
+            b.style.animationDelay = Math.random() * 8 + 's';
+            bokehContainer.appendChild(b);
+        }
+
+        // Create Falling Elements (Sakura, Lanterns, Stars)
+        function createFallingElements() {
+            const container = document.getElementById('falling-elements');
+            const items = ['🌸', '✨', '🏮', '🧧', '💖'];
+            
+            setInterval(() => {
+                const el = document.createElement('div');
+                el.classList.add('falling-item');
+                el.innerText = items[Math.floor(Math.random() * items.length)];
+                
+                const size = Math.random() * 15 + 15;
+                const left = Math.random() * 100;
+                const duration = Math.random() * 5 + 6;
+                const delay = Math.random() * 2;
+                
+                el.style.left = `${left}vw`;
+                el.style.fontSize = `${size}px`;
+                el.style.animationDuration = `${duration}s`;
+                el.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(el);
+                setTimeout(() => el.remove(), (duration + delay) * 1000);
+            }, 400);
+        }
+        createFallingElements();
+
+        // -------------------------------------------------------------
+        // ฟังก์ชัน Verify ที่เชื่อมต่อกับ API
+        // -------------------------------------------------------------
+        async function handleVerify() {
+            const input = document.getElementById('emp-id-input').value.trim();
+            const errorMsg = document.getElementById('error-msg');
+            const btn = document.getElementById('verify-btn');
+            const box = document.querySelector('.input-box');
+
+            if (!input) {
+                showError("กรุณากรอกรหัสพนักงาน");
+                return;
+            }
+
+            if (!API_URL) {
+                showError("⚠️ ยังไม่ได้ใส่ลิงก์ API Apps Script ในโค้ด");
+                return;
+            }
+
+            // เริ่มโหลด
+            errorMsg.innerText = "";
+            btn.innerText = "⏳ กำลังค้นหาข้อมูล...";
+            btn.disabled = true;
+
+            try {
+                // เรียกข้อมูลจาก Google Apps Script
+                const response = await fetch(`${API_URL}?id=${input}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // ถ้าพบข้อมูล
+                    updateCardContent(result.data);
+                    openCard();
+                } else {
+                    // ถ้าไม่พบ
+                    showError("❌ ไม่พบรหัสพนักงาน หรือรหัสไม่ถูกต้อง");
+                }
+            } catch (error) {
+                console.error(error);
+                showError("⚠️ เกิดข้อผิดพลาดในการเชื่อมต่อ");
+            } finally {
+                // คืนค่าปุ่ม
+                btn.innerText = "✨ เปิดซองความสุข ✨";
+                btn.disabled = false;
+            }
+        }
+
+        function showError(msg) {
+            const errorMsg = document.getElementById('error-msg');
+            const box = document.querySelector('.input-box');
+            errorMsg.innerText = msg;
+            box.style.animation = 'none';
+            box.offsetHeight; /* trigger reflow */
+            box.style.animation = 'shake 0.4s ease';
+            box.style.borderColor = "#d62828";
+            setTimeout(() => box.style.borderColor = "rgba(255, 175, 189, 0.5)", 500);
+        }
+
+        function updateCardContent(data) {
+            document.getElementById('display-name').innerText = data.name;
+            document.getElementById('display-zodiac').innerText = data.zodiac;
+            document.getElementById('display-power').innerText = data.power;
+            document.getElementById('display-personal').innerText = data.personal;
+            document.getElementById('display-blessing').innerText = `"${data.blessing}"`;
+            
+            const numbersContainer = document.getElementById('display-numbers');
+            numbersContainer.innerHTML = ''; 
+            // แปลง string เป็น array ถ้าจำเป็น
+            const nums = data.numbers.includes(',') ? data.numbers.split(',') : [data.numbers];
+            nums.forEach(num => {
+                const span = document.createElement('span');
+                span.innerText = num.trim();
+                numbersContainer.appendChild(span);
+            });
+        }
+
+        function openCard() {
+            if (isCardOpen) return;
+            isCardOpen = true;
+            document.body.classList.add('is-open');
+            document.getElementById('envelope').classList.add('is-flap-open');
+            setTimeout(triggerBurst, 400);
+        }
+
+        function closeCard() {
+            if (!isCardOpen) return;
+            isCardOpen = false;
+            document.body.classList.remove('is-open');
+            setTimeout(() => {
+                document.getElementById('envelope').classList.remove('is-flap-open');
+                document.getElementById('emp-id-input').value = "";
+            }, 400);
+        }
+
+        function openPhoto() {
+            const modal = document.getElementById('photo-modal');
+            modal.classList.add('show');
+        }
+
+        function closePhoto() {
+            const modal = document.getElementById('photo-modal');
+            modal.classList.remove('show');
+        }
+
+        function triggerBurst() {
+            const emojis = ['🧧', '❤️', '✨', '🌸', '💰', '🎉'];
+            for (let i = 0; i < 40; i++) {
+                const h = document.createElement('div');
+                h.classList.add('heart-burst');
+                h.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                h.style.left = '50%';
+                h.style.top = '50%';
+                h.style.fontSize = Math.random() * 20 + 15 + 'px';
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 200 + 100;
+                const vx = Math.cos(angle) * distance + 'px';
+                const vy = Math.sin(angle) * distance + 'px';
+                const rot = Math.random() * 360 + 'deg';
+                
+                h.style.setProperty('--x', vx);
+                h.style.setProperty('--y', vy);
+                h.style.setProperty('--rot', rot);
+                
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 1200);
+            }
+        }
+
+        function copyBlessing() {
+            const name = document.getElementById('display-name').innerText;
+            const personal = document.getElementById('display-personal').innerText;
+            const power = document.getElementById('display-power').innerText;
+            
+            const numbersElements = document.getElementById('display-numbers').querySelectorAll('span');
+            let numbersArray = [];
+            numbersElements.forEach(el => numbersArray.push(el.innerText));
+            const numbers = numbersArray.join(' • ');
+            
+            const text = `🧧 การ์ดมงคล SF ปี 2025 ถึง ${name}\n\n🔮 พลังมงคล: ${power}\n💌 ข้อความพิเศษ: ${personal}\n🍀 เลขนำโชค: ${numbers}\n\nHappy Valentine & CNY! ขอให้มีความสุขมากๆ ครับ ✨`;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        document.getElementById('emp-id-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleVerify();
+        });
+    </script>
+</body>
+</html>
