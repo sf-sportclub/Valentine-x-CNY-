@@ -13,7 +13,7 @@
             --envelope-dark: #d64541;
             --gold-accent: #ffd700;
             --gold-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            --card-white: rgba(255, 255, 255, 0.95);
+            --card-white: rgba(255, 255, 255, 0.98);
             --text-main: #4a1e36;
             --header-dark: #880d1e;
             --cny-gold: #ce9d2e;
@@ -29,6 +29,7 @@
 
         body {
             min-height: 100vh;
+            min-height: -webkit-fill-available; /* Fix for mobile browser address bars */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -39,7 +40,11 @@
             font-family: 'Kanit', sans-serif;
             overflow: hidden;
             perspective: 1500px;
-            padding: 20px;
+            padding: 16px;
+        }
+
+        html {
+            height: -webkit-fill-available;
         }
 
         @keyframes gradientBG {
@@ -60,17 +65,16 @@
             position: absolute;
             border-radius: 50%;
             filter: blur(40px);
-            opacity: 0.4;
+            opacity: 0.3;
             background: white;
             animation: moveBokeh 15s infinite alternate ease-in-out;
         }
 
         @keyframes moveBokeh {
             from { transform: translate(0, 0) scale(1); }
-            to { transform: translate(100px, 50px) scale(1.5); }
+            to { transform: translate(50px, 30px) scale(1.3); }
         }
 
-        /* Falling Elements (Sakura, Lanterns) */
         #falling-elements {
             position: fixed;
             inset: 0;
@@ -84,6 +88,7 @@
             top: -50px;
             animation: fall linear forwards;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            will-change: transform, opacity;
         }
 
         @keyframes fall {
@@ -96,8 +101,8 @@
         .overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
             opacity: 0;
             visibility: hidden;
             transition: all 0.5s ease;
@@ -112,24 +117,25 @@
         /* --- Headers --- */
         header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             z-index: 5;
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 100%;
         }
 
         body.is-open header {
             opacity: 0;
-            transform: translateY(-80px) scale(0.9);
+            transform: translateY(-50px) scale(0.9);
             pointer-events: none;
         }
 
         h1 {
             font-family: 'Montserrat', 'Kanit', sans-serif;
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
             color: var(--header-dark);
             text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
             font-weight: 900;
-            line-height: 1.4;
+            line-height: 1.3;
             background: linear-gradient(45deg, #880d1e, #d62828);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -138,17 +144,17 @@
 
         /* --- Input Section --- */
         .input-box {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
             padding: 24px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(242, 92, 84, 0.15);
-            margin-bottom: 30px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(242, 92, 84, 0.2);
+            margin-bottom: 25px;
             z-index: 10;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            border: 2px solid rgba(255, 175, 189, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.8);
             transition: all 0.5s ease;
             width: 100%;
             max-width: 320px;
@@ -156,45 +162,31 @@
             overflow: hidden;
         }
 
-        .input-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-            transform: skewX(-20deg);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { left: -100%; }
-            20% { left: 200%; }
-            100% { left: 200%; }
-        }
-
         body.is-open .input-box {
             opacity: 0;
             pointer-events: none;
-            transform: translateY(30px) scale(0.9);
+            transform: translateY(20px);
         }
 
         .input-box input {
-            padding: 14px;
-            border-radius: 12px;
+            padding: 16px;
+            border-radius: 14px;
             border: 2px solid #ffafbd;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-family: 'Montserrat', 'Kanit', sans-serif;
             outline: none;
             color: var(--header-dark);
             font-weight: 600;
             transition: all 0.3s ease;
-            background: rgba(255,255,255,0.9);
+            background: white;
+            /* Prevent auto-zoom on iOS */
+            font-size: 16px; 
         }
 
         .input-box input:focus {
             border-color: var(--envelope-red);
-            box-shadow: 0 0 10px rgba(242, 92, 84, 0.2);
-            transform: translateY(-2px);
+            box-shadow: 0 0 12px rgba(242, 92, 84, 0.15);
         }
 
         .input-box button {
@@ -202,30 +194,14 @@
             background-size: 200% auto;
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 12px;
+            padding: 16px;
+            border-radius: 14px;
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(242, 92, 84, 0.4);
+            box-shadow: 0 8px 20px rgba(242, 92, 84, 0.3);
             transition: all 0.3s ease;
             animation: gradientShift 3s ease infinite;
-        }
-
-        .input-box button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(242, 92, 84, 0.6);
-        }
-        
-        .input-box button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .input-box button:active {
-            transform: translateY(1px);
         }
 
         @keyframes gradientShift {
@@ -237,23 +213,15 @@
         .error-msg {
             color: #d62828;
             font-size: 0.85rem;
-            height: 1.2rem;
+            min-height: 1.2rem;
             text-align: center;
             font-weight: 600;
-            animation: shake 0.4s ease;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            50% { transform: translateX(5px); }
-            75% { transform: translateX(-5px); }
         }
 
         /* --- Envelope --- */
         .stage {
             position: relative;
-            width: 280px;
+            width: min(280px, 80vw);
             height: 180px;
             z-index: 10;
             animation: floating 4s infinite ease-in-out;
@@ -262,13 +230,13 @@
 
         body.is-open .stage {
             opacity: 0;
-            transform: translateY(100px) scale(0.5);
+            transform: translateY(50px) scale(0.5);
             pointer-events: none;
         }
 
         @keyframes floating {
             0%, 100% { transform: translateY(0) rotate(-1deg); }
-            50% { transform: translateY(-15px) rotate(1deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
         }
 
         .envelope-wrapper {
@@ -276,7 +244,7 @@
             width: 100%;
             height: 100%;
             background-color: var(--envelope-dark);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
             border-radius: 8px;
         }
 
@@ -286,9 +254,9 @@
             z-index: 4;
             inset: 0;
             border-top: 90px solid transparent;
-            border-right: 140px solid var(--envelope-red);
+            border-right: min(140px, 40vw) solid var(--envelope-red);
             border-bottom: 90px solid var(--envelope-red);
-            border-left: 140px solid var(--envelope-red);
+            border-left: min(140px, 40vw) solid var(--envelope-red);
             border-bottom-left-radius: 8px;
             border-bottom-right-radius: 8px;
         }
@@ -298,8 +266,8 @@
             top: 0;
             width: 0;
             height: 0;
-            border-left: 140px solid transparent;
-            border-right: 140px solid transparent;
+            border-left: min(140px, 40vw) solid transparent;
+            border-right: min(140px, 40vw) solid transparent;
             border-top: 95px solid #bd2d28;
             transform-origin: top;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -314,7 +282,8 @@
         .seal {
             position: absolute;
             top: 65px;
-            left: 115px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 50px;
             height: 50px;
             background: linear-gradient(135deg, #ff4d6d, #c9184a);
@@ -326,14 +295,13 @@
             color: white;
             font-size: 22px;
             border: 2px solid var(--gold-accent);
-            box-shadow: 0 0 15px rgba(255, 77, 109, 0.6), inset 0 0 10px rgba(0,0,0,0.2);
+            box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
             animation: pulseSeal 2s infinite;
         }
 
         @keyframes pulseSeal {
-            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
-            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(255, 77, 109, 0.9); }
-            100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
         }
 
         /* --- Message Card --- */
@@ -341,32 +309,29 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            width: 360px;
-            max-width: 95vw;
-            height: 660px;
-            max-height: 90vh;
+            width: 90%;
+            max-width: 380px;
+            height: auto;
+            max-height: 85vh;
             background: var(--card-white);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 30px 24px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.4), inset 0 0 0 4px #fff0f3, inset 0 0 0 8px #ffafbd;
+            border-radius: 30px;
+            padding: 25px 20px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            transform: translate(-50%, 0) scale(0.2) rotate(-10deg);
+            transform: translate(-50%, 100%) scale(0.5);
             opacity: 0;
             visibility: hidden;
             z-index: 100;
-            transition: all 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .card::-webkit-scrollbar { width: 6px; }
-        .card::-webkit-scrollbar-thumb { background: #ffafbd; border-radius: 10px; }
-
         body.is-open .card {
-            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            transform: translate(-50%, -50%) scale(1);
             opacity: 1;
             visibility: visible;
         }
@@ -374,18 +339,16 @@
         .card-header-badge {
             background: var(--gold-gradient);
             color: #5e0b15;
-            padding: 6px 18px;
+            padding: 4px 14px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            margin-bottom: 15px;
+            font-size: 0.75rem;
+            margin-bottom: 12px;
             font-weight: 800;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 10px rgba(253, 160, 133, 0.4);
             text-transform: uppercase;
         }
 
         .emp-name {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             color: var(--header-dark);
             font-weight: 800;
             margin-bottom: 2px;
@@ -396,103 +359,73 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 700;
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+            margin-bottom: 15px;
+            font-size: 1rem;
         }
 
         .section-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: #880d1e;
             align-self: flex-start;
-            margin-bottom: 6px;
-            margin-left: 5px;
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
             gap: 5px;
         }
 
-        .power-box {
-            background: linear-gradient(135deg, #fff8f9, #fff0f3);
-            padding: 14px 18px;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: var(--text-main);
-            margin-bottom: 18px;
-            border-left: 5px solid var(--envelope-red);
-            text-align: left;
+        .power-box, .personal-msg-box {
             width: 100%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            position: relative;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .power-box {
+            background: #fff5f6;
+            color: var(--text-main);
+            border-left: 4px solid var(--envelope-red);
         }
 
         .personal-msg-box {
-            background: linear-gradient(135deg, #fdf0d5, #fcf4e3);
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            background: #fffcf0;
             color: #5e0b15;
-            margin-bottom: 18px;
-            width: 100%;
-            text-align: left;
-            position: relative;
             border: 1.5px dashed var(--cny-gold);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        }
-
-        .personal-msg-box::before {
-            content: '🧧';
-            position: absolute;
-            top: -12px;
-            right: -5px;
-            font-size: 1.4rem;
-            transform: rotate(15deg);
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-            animation: floating 3s infinite ease-in-out;
+            position: relative;
         }
 
         .blessing-text {
             font-style: italic;
             color: #d62828;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            margin-bottom: 18px;
+            margin-bottom: 15px;
             padding: 0 10px;
-            position: relative;
         }
-        
-        .blessing-text::before, .blessing-text::after {
-            content: '✨';
-            position: absolute;
-            font-size: 0.8rem;
-            opacity: 0.6;
-        }
-        .blessing-text::before { left: -5px; top: 0; }
-        .blessing-text::after { right: -5px; bottom: 0; }
 
         .lucky-numbers {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .lucky-numbers span {
             background: var(--gold-gradient);
             color: #5e0b15;
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             font-weight: 800;
-            font-size: 1.1rem;
-            box-shadow: 0 5px 15px rgba(253, 160, 133, 0.4), inset 0 -2px 5px rgba(0,0,0,0.1);
             border: 2px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         
         .btn-photo {
@@ -500,176 +433,120 @@
             background: linear-gradient(45deg, #ffd700, #ffb347);
             color: #5e0b15;
             border: none;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 14px;
+            border-radius: 14px;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 0.95rem;
             margin-bottom: 15px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 179, 71, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-photo:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 179, 71, 0.6);
         }
 
         .btn-group {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
-            margin-top: auto;
+            margin-top: 10px;
         }
 
         .btn-card {
             flex: 1;
             padding: 14px;
-            border-radius: 14px;
+            border-radius: 12px;
             border: none;
             font-weight: 700;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
+            font-size: 0.85rem;
             font-family: 'Kanit', sans-serif;
         }
 
-        .btn-card:active { transform: scale(0.95); }
-
-        .btn-copy { 
-            background: #f1f3f5; 
-            color: #495057; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        .btn-copy:hover { background: #e9ecef; }
-
-        .btn-close { 
-            background: var(--envelope-red); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(242, 92, 84, 0.3);
-        }
-        .btn-close:hover { background: #d64541; }
+        .btn-copy { background: #f1f3f5; color: #495057; }
+        .btn-close { background: var(--envelope-red); color: white; }
         
         /* --- Photo Popup Modal --- */
         .photo-modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.9);
             z-index: 200;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
             padding: 20px;
         }
         
-        .photo-modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
+        .photo-modal.show { opacity: 1; visibility: visible; }
         
         .photo-content {
             position: relative;
-            transform: scale(0.8);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-width: 90vw;
-            max-height: 90vh;
-        }
-        
-        .photo-modal.show .photo-content {
-            transform: scale(1);
+            max-width: 100%;
+            max-height: 100%;
         }
         
         .photo-frame {
             background: white;
-            padding: 15px;
-            border-radius: 10px;
-            /* Luxurious Frame Style */
-            border: 4px solid #ce9d2e; /* Gold border */
-            outline: 2px solid #880d1e; /* Red outline */
-            outline-offset: 4px;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 20px 50px rgba(0,0,0,0.5);
-            position: relative;
-        }
-        
-        .photo-frame::before {
-            content: '📸 ความทรงจำของเรา';
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-family: 'Kanit', sans-serif;
-            font-size: 1rem;
-            white-space: nowrap;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 12px;
+            border: 3px solid #ce9d2e;
         }
         
         .photo-frame img {
             display: block;
-            max-width: 100%;
-            max-height: 70vh;
-            border-radius: 4px;
-            border: 1px solid #ddd;
+            width: 100%;
+            height: auto;
+            max-height: 75vh;
+            border-radius: 6px;
+            object-fit: contain;
         }
         
         .close-photo {
             position: absolute;
-            top: -20px;
-            right: -20px;
+            top: -15px;
+            right: -15px;
             background: white;
-            color: #d62828;
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            color: #d62828;
             font-weight: bold;
-            cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            border: 2px solid #d62828;
-            z-index: 10;
         }
 
-        /* --- Animations --- */
+        /* --- Toast --- */
+        .toast {
+            position: fixed;
+            top: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: 0.3s ease;
+            z-index: 300;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
         .heart-burst {
             position: fixed;
             pointer-events: none;
             z-index: 110;
-            animation: burst 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            animation: burst 0.8s ease-out forwards;
         }
 
         @keyframes burst {
-            0% { transform: scale(0) translate(0,0) rotate(0deg); opacity: 1; }
-            100% { transform: scale(1.5) translate(var(--x), var(--y)) rotate(var(--rot)); opacity: 0; }
+            0% { transform: scale(0) translate(0,0); opacity: 1; }
+            100% { transform: scale(1.2) translate(var(--x), var(--y)); opacity: 0; }
         }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            background: rgba(43, 45, 66, 0.9);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 200;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            backdrop-filter: blur(5px);
-        }
-        .toast.show { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
@@ -680,11 +557,11 @@
 
     <header id="main-header">
         <h1>🧧 การ์ดพลังมงคล<br>Valentine × ตรุษจีน 💌</h1>
-        <p style="color: #a4161a; font-size: 0.9rem; margin-top: 8px; font-weight: 600;">A Special Warm Message for Family</p>
+        <p style="color: #a4161a; font-size: 0.85rem; margin-top: 5px; font-weight: 600;">A Special Message for SF Family</p>
     </header>
 
     <div class="input-box" id="id-input-section">
-        <p style="font-size: 0.95rem; font-weight: 700; color: #880d1e; text-align: center;">ใส่รหัสพนักงานเพื่อเปิดซองมงคล 🗝️</p>
+        <p style="font-size: 0.9rem; font-weight: 700; color: #880d1e; text-align: center;">🗝️ ใส่รหัสพนักงานเพื่อเปิดซองมงคล</p>
         <input type="tel" id="emp-id-input" placeholder="รหัสพนักงาน" maxlength="10">
         <p class="error-msg" id="error-msg"></p>
         <button id="verify-btn" onclick="handleVerify()">✨ เปิดซองความสุข ✨</button>
@@ -699,145 +576,104 @@
 
     <!-- The Result Card -->
     <div class="card" id="message-card">
-        <div class="card-header-badge">Valentine x CNY Special 2025</div>
-        
+        <div class="card-header-badge">Valentine x CNY 2025</div>
         <div class="emp-name" id="display-name">คุณ...</div>
         <div class="emp-zodiac" id="display-zodiac">ราศี...</div>
         
         <div class="section-title">🔮 พลังมงคลปีนี้:</div>
-        <div class="power-box" id="display-power">พลังเด่นคือความสดใส...</div>
+        <div class="power-box" id="display-power">...</div>
         
         <div class="section-title">💌 ความในใจพิเศษ:</div>
-        <div class="personal-msg-box" id="display-personal">
-            ขอให้เป็นปีที่ดี...
-        </div>
+        <div class="personal-msg-box" id="display-personal">...</div>
 
         <div class="section-title">🌟 คำอวยพรส่งท้าย:</div>
-        <div class="blessing-text" id="display-blessing">
-            "ขอให้ทุกวันเต็มไปด้วยพลังใจดี ๆ"
-        </div>
+        <div class="blessing-text" id="display-blessing">"..."</div>
         
-        <div style="font-size: 0.8rem; color: #ce9d2e; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;">
-            🎲 เลขมงคลนำโชค:
-        </div>
-        <div class="lucky-numbers" id="display-numbers">
-            <!-- Numbers will be injected here as spans -->
-        </div>
+        <div style="font-size: 0.75rem; color: #ce9d2e; font-weight: 700; margin-bottom: 8px;">🎲 เลขมงคลนำโชค:</div>
+        <div class="lucky-numbers" id="display-numbers"></div>
         
-        <!-- Group Photo Button -->
-        <button class="btn-photo" onclick="openPhoto()">
-            📸 ดูรูปภาพรวมความทรงจำ
-        </button>
+        <button class="btn-photo" onclick="openPhoto()">📸 ดูรูปภาพความทรงจำ</button>
         
         <div class="btn-group">
-            <button class="btn-card btn-copy" onclick="copyBlessing()">📋 คัดลอกข้อความ</button>
-            <button class="btn-card btn-close" onclick="closeCard()">ปิดการ์ด ❌</button>
+            <button class="btn-card btn-copy" onclick="copyBlessing()">📋 คัดลอก</button>
+            <button class="btn-card btn-close" onclick="closeCard()">ปิด ✕</button>
         </div>
     </div>
 
-    <!-- Photo Modal Popup -->
     <div id="photo-modal" class="photo-modal" onclick="closePhoto()">
         <div class="photo-content" onclick="event.stopPropagation()">
             <div class="close-photo" onclick="closePhoto()">✕</div>
             <div class="photo-frame">
-                <img src="https://firebasestorage.googleapis.com/v0/b/pichayut-40dd2.firebasestorage.app/o/LINE_ALBUM_24122025_260210_1.jpg?alt=media&token=2f1e328e-a518-4364-bf95-545326a943a0" alt="Group Memory">
+                <img id="group-photo-img" src="https://firebasestorage.googleapis.com/v0/b/pichayut-40dd2.firebasestorage.app/o/LINE_ALBUM_24122025_260210_1.jpg?alt=media&token=2f1e328e-a518-4364-bf95-545326a943a0" alt="Memory">
             </div>
         </div>
     </div>
 
-    <div id="toast" class="toast">💖 คัดลอกข้อความส่งความสุขแล้ว! ✨</div>
+    <div id="toast" class="toast">💖 คัดลอกส่งความสุขแล้ว!</div>
 
     <script>
-        // -------------------------------------------------------------
-        // 🛠️ ส่วนตั้งค่าสำหรับเชื่อมต่อ Google Apps Script
-        // -------------------------------------------------------------
-        // นำ Web App URL ที่ได้จาก Google Apps Script มาวางในเครื่องหมายคำพูดด้านล่าง
         const API_URL = "https://script.google.com/macros/s/AKfycbzdNWPiMsatya0rv3-OXaK6cUUbgLa2gYE26oWZ_dACt6p3OvTLI_NcdSu0lxJ-ijFAWg/exec"; 
-        // -------------------------------------------------------------
-
         let isCardOpen = false;
 
-        // Create Bokeh Background
+        // Optimized Bokeh
         const bokehContainer = document.getElementById('bokeh-container');
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 6; i++) {
             const b = document.createElement('div');
             b.classList.add('bokeh');
-            b.style.width = Math.random() * 150 + 100 + 'px';
-            b.style.height = b.style.width;
+            const size = Math.random() * 80 + 80;
+            b.style.width = size + 'px';
+            b.style.height = size + 'px';
             b.style.top = Math.random() * 100 + '%';
             b.style.left = Math.random() * 100 + '%';
-            b.style.animationDelay = Math.random() * 8 + 's';
+            b.style.animationDelay = Math.random() * 5 + 's';
             bokehContainer.appendChild(b);
         }
 
-        // Create Falling Elements (Sakura, Lanterns, Stars)
+        // Optimized Falling Items
         function createFallingElements() {
             const container = document.getElementById('falling-elements');
             const items = ['🌸', '✨', '🏮', '🧧', '💖'];
-            
             setInterval(() => {
+                if (document.hidden || isCardOpen) return;
                 const el = document.createElement('div');
                 el.classList.add('falling-item');
                 el.innerText = items[Math.floor(Math.random() * items.length)];
-                
-                const size = Math.random() * 15 + 15;
-                const left = Math.random() * 100;
-                const duration = Math.random() * 5 + 6;
-                const delay = Math.random() * 2;
-                
-                el.style.left = `${left}vw`;
-                el.style.fontSize = `${size}px`;
-                el.style.animationDuration = `${duration}s`;
-                el.style.animationDelay = `${delay}s`;
-                
+                const size = Math.random() * 12 + 12;
+                el.style.left = Math.random() * 95 + 'vw';
+                el.style.fontSize = size + 'px';
+                const duration = Math.random() * 4 + 5;
+                el.style.animationDuration = duration + 's';
                 container.appendChild(el);
-                setTimeout(() => el.remove(), (duration + delay) * 1000);
-            }, 400);
+                setTimeout(() => el.remove(), duration * 1000);
+            }, 800);
         }
         createFallingElements();
 
-        // -------------------------------------------------------------
-        // ฟังก์ชัน Verify ที่เชื่อมต่อกับ API
-        // -------------------------------------------------------------
         async function handleVerify() {
             const input = document.getElementById('emp-id-input').value.trim();
             const errorMsg = document.getElementById('error-msg');
             const btn = document.getElementById('verify-btn');
-            const box = document.querySelector('.input-box');
 
             if (!input) {
                 showError("กรุณากรอกรหัสพนักงาน");
                 return;
             }
 
-            if (!API_URL) {
-                showError("⚠️ ยังไม่ได้ใส่ลิงก์ API Apps Script ในโค้ด");
-                return;
-            }
-
-            // เริ่มโหลด
-            errorMsg.innerText = "";
-            btn.innerText = "⏳ กำลังค้นหาข้อมูล...";
+            btn.innerText = "⏳ กำลังเปิดซอง...";
             btn.disabled = true;
 
             try {
-                // เรียกข้อมูลจาก Google Apps Script
                 const response = await fetch(`${API_URL}?id=${input}`);
                 const result = await response.json();
-
                 if (result.success) {
-                    // ถ้าพบข้อมูล
                     updateCardContent(result.data);
                     openCard();
                 } else {
-                    // ถ้าไม่พบ
-                    showError("❌ ไม่พบรหัสพนักงาน หรือรหัสไม่ถูกต้อง");
+                    showError("ไม่พบรหัสพนักงานนี้");
                 }
             } catch (error) {
-                console.error(error);
-                showError("⚠️ เกิดข้อผิดพลาดในการเชื่อมต่อ");
+                showError("การเชื่อมต่อขัดข้อง");
             } finally {
-                // คืนค่าปุ่ม
                 btn.innerText = "✨ เปิดซองความสุข ✨";
                 btn.disabled = false;
             }
@@ -845,13 +681,10 @@
 
         function showError(msg) {
             const errorMsg = document.getElementById('error-msg');
-            const box = document.querySelector('.input-box');
             errorMsg.innerText = msg;
-            box.style.animation = 'none';
-            box.offsetHeight; /* trigger reflow */
+            const box = document.querySelector('.input-box');
             box.style.animation = 'shake 0.4s ease';
-            box.style.borderColor = "#d62828";
-            setTimeout(() => box.style.borderColor = "rgba(255, 175, 189, 0.5)", 500);
+            setTimeout(() => box.style.animation = '', 400);
         }
 
         function updateCardContent(data) {
@@ -863,17 +696,17 @@
             
             const numbersContainer = document.getElementById('display-numbers');
             numbersContainer.innerHTML = ''; 
-            // แปลง string เป็น array ถ้าจำเป็น
-            const nums = data.numbers.includes(',') ? data.numbers.split(',') : [data.numbers];
+            const nums = data.numbers.split(/[,,|]/);
             nums.forEach(num => {
-                const span = document.createElement('span');
-                span.innerText = num.trim();
-                numbersContainer.appendChild(span);
+                if(num.trim()) {
+                    const span = document.createElement('span');
+                    span.innerText = num.trim();
+                    numbersContainer.appendChild(span);
+                }
             });
         }
 
         function openCard() {
-            if (isCardOpen) return;
             isCardOpen = true;
             document.body.classList.add('is-open');
             document.getElementById('envelope').classList.add('is-flap-open');
@@ -881,76 +714,60 @@
         }
 
         function closeCard() {
-            if (!isCardOpen) return;
             isCardOpen = false;
             document.body.classList.remove('is-open');
-            setTimeout(() => {
-                document.getElementById('envelope').classList.remove('is-flap-open');
-                document.getElementById('emp-id-input').value = "";
-            }, 400);
+            document.getElementById('envelope').classList.remove('is-flap-open');
+            document.getElementById('emp-id-input').value = "";
+            document.getElementById('error-msg').innerText = "";
         }
 
         function openPhoto() {
-            const modal = document.getElementById('photo-modal');
-            modal.classList.add('show');
+            document.getElementById('photo-modal').classList.add('show');
         }
 
         function closePhoto() {
-            const modal = document.getElementById('photo-modal');
-            modal.classList.remove('show');
+            document.getElementById('photo-modal').classList.remove('show');
         }
 
         function triggerBurst() {
-            const emojis = ['🧧', '❤️', '✨', '🌸', '💰', '🎉'];
-            for (let i = 0; i < 40; i++) {
+            const emojis = ['🧧', '❤️', '✨', '🌸', '💰'];
+            for (let i = 0; i < 25; i++) {
                 const h = document.createElement('div');
                 h.classList.add('heart-burst');
                 h.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
                 h.style.left = '50%';
                 h.style.top = '50%';
-                h.style.fontSize = Math.random() * 20 + 15 + 'px';
-                
                 const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 200 + 100;
-                const vx = Math.cos(angle) * distance + 'px';
-                const vy = Math.sin(angle) * distance + 'px';
-                const rot = Math.random() * 360 + 'deg';
-                
-                h.style.setProperty('--x', vx);
-                h.style.setProperty('--y', vy);
-                h.style.setProperty('--rot', rot);
-                
+                const dist = Math.random() * 120 + 60;
+                h.style.setProperty('--x', Math.cos(angle) * dist + 'px');
+                h.style.setProperty('--y', Math.sin(angle) * dist + 'px');
                 document.body.appendChild(h);
-                setTimeout(() => h.remove(), 1200);
+                setTimeout(() => h.remove(), 800);
             }
         }
 
         function copyBlessing() {
             const name = document.getElementById('display-name').innerText;
             const personal = document.getElementById('display-personal').innerText;
-            const power = document.getElementById('display-power').innerText;
+            const text = `🧧 การ์ดมงคล SF ถึง ${name}\n\n💌 ข้อความ: ${personal}\n\nHappy Valentine & CNY 2025! ✨`;
             
-            const numbersElements = document.getElementById('display-numbers').querySelectorAll('span');
-            let numbersArray = [];
-            numbersElements.forEach(el => numbersArray.push(el.innerText));
-            const numbers = numbersArray.join(' • ');
-            
-            const text = `🧧 การ์ดมงคล SF ปี 2025 ถึง ${name}\n\n🔮 พลังมงคล: ${power}\n💌 ข้อความพิเศษ: ${personal}\n🍀 เลขนำโชค: ${numbers}\n\nHappy Valentine & CNY! ขอให้มีความสุขมากๆ ครับ ✨`;
-            
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
             document.execCommand('copy');
-            document.body.removeChild(textArea);
+            document.body.removeChild(el);
             
             const toast = document.getElementById('toast');
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
         document.getElementById('emp-id-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleVerify();
+            if (e.key === 'Enter') {
+                handleVerify();
+                e.target.blur(); // Hide keyboard on mobile
+            }
         });
     </script>
 </body>
